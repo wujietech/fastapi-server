@@ -1,3 +1,12 @@
+'''
+Author: 李明(liming@inmyshow.com)
+Date: 2025-04-02 16:32:19
+LastEditors: 李明(liming@inmyshow.com)
+LastEditTime: 2025-04-02 17:39:41
+FilePath: /server/backend/app/api/routes/utils.py
+Description: 工具路由
+Copyright (c) 2025 by 五街科技, All Rights Reserved. 
+'''
 from fastapi import APIRouter, Depends
 from pydantic.networks import EmailStr
 
@@ -15,7 +24,7 @@ router = APIRouter(prefix="/utils", tags=["utils"])
 )
 def test_email(email_to: EmailStr) -> Message:
     """
-    Test emails.
+    测试邮件
     """
     email_data = generate_test_email(email_to=email_to)
     send_email(
@@ -28,4 +37,7 @@ def test_email(email_to: EmailStr) -> Message:
 
 @router.get("/health-check/")
 async def health_check() -> bool:
+    """
+    健康检查
+    """
     return True

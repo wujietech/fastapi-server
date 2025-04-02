@@ -1,3 +1,13 @@
+'''
+Author: 李明(liming@inmyshow.com)
+Date: 2025-04-02 16:32:19
+LastEditors: 李明(liming@inmyshow.com)
+LastEditTime: 2025-04-02 17:51:14
+FilePath: /server/backend/app/tests_pre_start.py
+Description: 
+
+Copyright (c) 2025 by 五街科技, All Rights Reserved. 
+'''
 import logging
 
 from sqlalchemy import Engine
@@ -21,7 +31,7 @@ wait_seconds = 1
 )
 def init(db_engine: Engine) -> None:
     try:
-        # Try to create session to check if DB is awake
+        # 尝试创建会话以检查数据库是否正在运行
         with Session(db_engine) as session:
             session.exec(select(1))
     except Exception as e:
@@ -30,9 +40,9 @@ def init(db_engine: Engine) -> None:
 
 
 def main() -> None:
-    logger.info("Initializing service")
+    logger.info("初始化服务")
     init(engine)
-    logger.info("Service finished initializing")
+    logger.info("服务初始化完成")
 
 
 if __name__ == "__main__":

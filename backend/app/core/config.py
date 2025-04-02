@@ -23,19 +23,23 @@ def parse_cors(v: Any) -> list[str] | str:
         return v
     raise ValueError(v)
 
-
+# 核心配置
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        # Use top level .env file (one level above ./backend/)
+        # 使用顶层 .env 文件（在 ./backend/ 上一级）
         env_file="../.env",
         env_ignore_empty=True,
         extra="ignore",
     )
+    # API 版本
     API_V1_STR: str = "/api/v1"
+    # 密钥
     SECRET_KEY: str = secrets.token_urlsafe(32)
-    # 60 minutes * 24 hours * 8 days = 8 days
+    # token 过期时间：60 分钟 * 24 小时 * 8 天 = 8 天
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    # 前端地址
     FRONTEND_HOST: str = "http://localhost:5173"
+    # 环境：local（默认）、staging、production
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
 
     BACKEND_CORS_ORIGINS: Annotated[
@@ -84,6 +88,7 @@ class Settings(BaseSettings):
             self.EMAILS_FROM_NAME = self.PROJECT_NAME
         return self
 
+    # 密码重置令牌过期时间：48 小时
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
 
     @computed_field  # type: ignore[prop-decorator]
@@ -95,6 +100,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
+    # 检查默认密钥
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (
@@ -106,6 +112,7 @@ class Settings(BaseSettings):
             else:
                 raise ValueError(message)
 
+    # 强制非默认密钥，如果没有修改 .env 文件的默认值，会抛出异常
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:
         self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
