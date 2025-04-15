@@ -1,3 +1,12 @@
+'''
+Author: 李明(liming@inmyshow.com)
+Date: 2025-04-15 16:22:13
+LastEditors: 李明(liming@inmyshow.com)
+LastEditTime: 2025-04-15 18:06:58
+FilePath: /fastapi-server/backend/app/main.py
+Description: 主文件
+Copyright (c) 2025 by 五街科技, All Rights Reserved. 
+'''
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute

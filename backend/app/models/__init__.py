@@ -28,9 +28,24 @@ from .user import (
     UserUpdateMe,
     UpdatePassword,
 )
-from .category import Category, CategoryBase
-from .workflow import Workflow, WorkflowBase
-from .workflow_log import WorkflowLog, WorkflowLogBase
+from .category import (
+    Category, 
+    CategoryBase,
+    CategoryPublic,
+    CategoriesPublic,
+)
+from .workflow import (
+    Workflow, 
+    WorkflowBase,
+    WorkflowPublic,
+    WorkflowsPublic,
+)
+from .workflow_log import (
+    WorkflowLog, 
+    WorkflowLogBase,
+    WorkflowLogPublic,
+    WorkflowLogsPublic,
+)
 
 __all__ = [
     "Message",
@@ -54,8 +69,14 @@ __all__ = [
     "UpdatePassword",
     "Category",
     "CategoryBase",
+    "CategoryPublic",
+    "CategoriesPublic",
     "Workflow",
     "WorkflowBase",
+    "WorkflowPublic",
+    "WorkflowsPublic",
     "WorkflowLog",
     "WorkflowLogBase",
+    "WorkflowLogPublic",
+    "WorkflowLogsPublic",
 ] 
