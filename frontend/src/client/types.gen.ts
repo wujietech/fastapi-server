@@ -132,6 +132,25 @@ export type ItemsDeleteItemData = {
 
 export type ItemsDeleteItemResponse = Message
 
+export type CategoryReadCategoriesData = {
+  pageNumber?: number
+  pageSize?: number
+}
+
+export type CategoryPublic = {
+  id: string
+  name: string
+  description: string
+}
+
+export type CategoriesPublic = {
+  data: Array<CategoryPublic>
+  count: number
+}
+
+export type CategoryReadCategoriesResponse = CategoriesPublic
+
+
 export type LoginLoginAccessTokenData = {
   formData: Body_login_login_access_token
 }

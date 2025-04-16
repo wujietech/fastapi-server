@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 17:37:48
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 18:07:22
+LastEditTime: 2025-04-15 19:11:26
 FilePath: /fastapi-server/backend/app/api/routes/category.py
 Description: 分类接口
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -10,18 +10,21 @@ Copyright (c) 2025 by 五街科技, All Rights Reserved.
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Category, CategoryBase, CategoryPublic, CategoriesPublic, Message
 
-router = APIRouter(prefix="/category", tags=["category"])
+router = APIRouter(prefix="/categories", tags=["category"])
 
 # 获取分类列表
 @router.get("/", response_model=CategoriesPublic)
 def read_categories(
-    session: SessionDep, current_user: CurrentUser, pageNumber: int = 1, pageSize: int = 20
+    session: SessionDep, 
+    current_user: CurrentUser, 
+    pageNumber: int = Query(default=1, ge=1, description="页码，从1开始"), 
+    pageSize: int = Query(default=20, gt=0, le=100, description="每页记录数")
 ) -> Any:
     """
     Retrieve categories.
@@ -29,6 +32,8 @@ def read_categories(
     if current_user.is_superuser:
         count_statement = select(func.count()).select_from(Category)
         count = session.exec(count_statement).one()
+        
+        # 计算偏移量
         offset = (pageNumber - 1) * pageSize
         statement = select(Category).offset(offset).limit(pageSize)
         categories = session.exec(statement).all()

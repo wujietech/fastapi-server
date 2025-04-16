@@ -44,6 +44,8 @@ import type {
   UtilsTestEmailData,
   UtilsTestEmailResponse,
   UtilsHealthCheckResponse,
+  CategoryReadCategoriesData,
+  CategoryReadCategoriesResponse,
 } from "./types.gen"
 
 export class ItemsService {
@@ -165,6 +167,34 @@ export class ItemsService {
       },
     })
   }
+}
+
+export class CategoryService {
+  /**
+   * Read Categories
+   * Retrieve categories.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns CategoriesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readCategories(
+    data: CategoryReadCategoriesData = {},
+  ): CancelablePromise<CategoryReadCategoriesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/categories/",
+      query: {
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+  
 }
 
 export class LoginService {
