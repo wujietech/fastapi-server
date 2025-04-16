@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:37:45
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 16:38:01
+LastEditTime: 2025-04-16 16:20:29
 FilePath: /fastapi-server/backend/app/models/__init__.py
 Description: 数据库模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -39,6 +39,7 @@ from .workflow import (
     WorkflowBase,
     WorkflowPublic,
     WorkflowsPublic,
+    WorkflowDetail,
 )
 from .workflow_log import (
     WorkflowLog, 
@@ -46,6 +47,7 @@ from .workflow_log import (
     WorkflowLogPublic,
     WorkflowLogsPublic,
 )
+from .enums import PageSize
 
 __all__ = [
     "Message",
@@ -75,8 +77,10 @@ __all__ = [
     "WorkflowBase",
     "WorkflowPublic",
     "WorkflowsPublic",
+    "WorkflowDetail",
     "WorkflowLog",
     "WorkflowLogBase",
     "WorkflowLogPublic",
     "WorkflowLogsPublic",
+    "PageSize",
 ] 

@@ -8,8 +8,10 @@ Description: 主文件
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
 '''
 import sentry_sdk
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.routing import APIRoute
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
@@ -28,6 +30,19 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "code": status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "message": "请求参数验证错误",
+            "data": str(exc.errors())
+        }
+    )
+
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:
