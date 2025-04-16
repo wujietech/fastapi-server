@@ -55,8 +55,8 @@ function ItemsTable() {
       search: (prev: { [key: string]: string }) => ({ ...prev, page }),
     })
 
-  const items = data?.data.slice(0, PER_PAGE) ?? []
-  const count = data?.count ?? 0
+  const items = data?.data?.items?.slice(0, PER_PAGE) ?? []
+  const total = data?.data?.total ?? 0
 
   if (isLoading) {
     return <PendingItems />
@@ -116,7 +116,7 @@ function ItemsTable() {
       </Table.Root>
       <Flex justifyContent="flex-end" mt={4}>
         <PaginationRoot
-          count={count}
+          count={total}
           pageSize={PER_PAGE}
           onPageChange={({ page }) => setPage(page)}
         >

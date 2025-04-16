@@ -144,8 +144,8 @@ export type CategoryPublic = {
 }
 
 export type CategoriesPublic = {
-  data: Array<CategoryPublic>
-  count: number
+  items: Array<CategoryPublic>
+  total: number
 }
 
 export type CategoryReadCategoriesResponse = CategoriesPublic

@@ -5,15 +5,14 @@ import {
   Heading,
   Table,
   VStack,
+  Button,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { FiSearch } from "react-icons/fi"
+import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi"
 import { z } from "zod"
 
-import { CategoryService } from "@/client"
-import { ItemActionsMenu } from "@/components/Common/ItemActionsMenu"
-import AddItem from "@/components/Items/AddItem"
+import { CategoryPublic, CategoryService } from "@/client"
 import PendingItems from "@/components/Pending/PendingItems"
 import {
   PaginationItems,
@@ -41,6 +40,29 @@ export const Route = createFileRoute("/_layout/categories")({
   validateSearch: (search) => itemsSearchSchema.parse(search),
 })
 
+function CategoryActionsMenu({ category }: { category: CategoryPublic }) {
+  return (
+    <Flex gap={2}>
+      <Button
+        leftIcon={<FiEdit />}
+        variant="ghost"
+        size="sm"
+        onClick={() => console.log('编辑', category.id)}
+      >
+        编辑
+      </Button>
+      <Button
+        leftIcon={<FiTrash2 />}
+        variant="ghost"
+        size="sm"
+        onClick={() => console.log('删除', category.id)}
+      >
+        删除
+      </Button>
+    </Flex>
+  )
+}
+
 function ItemsTable() {
   const navigate = useNavigate({ from: Route.fullPath })
   const { page } = Route.useSearch()
@@ -55,14 +77,14 @@ function ItemsTable() {
       search: (prev: { [key: string]: string }) => ({ ...prev, page }),
     })
 
-  const items = data?.data.slice(0, PER_PAGE) ?? []
-  const count = data?.count ?? 0
+  const categories = data?.data?.items ?? []
+  const total = data?.data?.total ?? 0
 
   if (isLoading) {
     return <PendingItems />
   }
 
-  if (items.length === 0) {
+  if (categories.length === 0) {
     return (
       <EmptyState.Root>
         <EmptyState.Content>
@@ -70,9 +92,9 @@ function ItemsTable() {
             <FiSearch />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>You don't have any items yet</EmptyState.Title>
+            <EmptyState.Title>暂无分类数据</EmptyState.Title>
             <EmptyState.Description>
-              Add a new item to get started
+              添加一个新的分类开始使用
             </EmptyState.Description>
           </VStack>
         </EmptyState.Content>
@@ -92,23 +114,23 @@ function ItemsTable() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {items?.map((item) => (
-            <Table.Row key={item.id} opacity={isPlaceholderData ? 0.5 : 1}>
+          {categories.map((category: CategoryPublic) => (
+            <Table.Row key={category.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                {item.id}
+                {category.id}
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
-                {item.name}
+                {category.name}
               </Table.Cell>
               <Table.Cell
-                color={!item.description ? "gray" : "inherit"}
+                color={!category.description ? "gray" : "inherit"}
                 truncate
                 maxW="30%"
               >
-                {item.description || "N/A"}
+                {category.description || "N/A"}
               </Table.Cell>
               <Table.Cell>
-                <ItemActionsMenu item={item} />
+                <CategoryActionsMenu category={category} />
               </Table.Cell>
             </Table.Row>
           ))}
@@ -116,7 +138,7 @@ function ItemsTable() {
       </Table.Root>
       <Flex justifyContent="flex-end" mt={4}>
         <PaginationRoot
-          count={count}
+          count={total}
           pageSize={PER_PAGE}
           onPageChange={({ page }) => setPage(page)}
         >
@@ -135,9 +157,8 @@ function Items() {
   return (
     <Container maxW="full">
       <Heading size="lg" pt={12}>
-        Items Management
+        分类管理
       </Heading>
-      <AddItem />
       <ItemsTable />
     </Container>
   )

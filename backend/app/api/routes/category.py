@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:48:23
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-16 17:20:21
+LastEditTime: 2025-04-16 17:48:00
 FilePath: /fastapi-server/backend/app/api/routes/category.py
 Description: 分类路由
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -21,7 +21,7 @@ from app.models.category import CategoryList
 router = APIRouter(prefix="/categories", tags=["categories"])
 
 # 获取分类列表
-@router.get("/", response_model=CategoryList)
+@router.get("/", response_model=Response[CategoryList])
 def read_categories(
     session: SessionDep, 
     current_user: CurrentUser, 
@@ -32,20 +32,19 @@ def read_categories(
     Retrieve categories.
     """
     if current_user.is_superuser:
+        skip = (pageNumber - 1) * pageSize
         count_statement = select(func.count()).select_from(Category)
         count = session.exec(count_statement).one()
         
-        # 计算偏移量
-        offset = (pageNumber - 1) * pageSize
-        statement = select(Category).offset(offset).limit(pageSize)
+        statement = select(Category).offset(skip).limit(pageSize)
         categories = session.exec(statement).all()
     else:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
-    return CategoryList(data=categories, count=count)
+    return Response(data=   CategoryList(items=categories, total=count))
 
 # 获取分类详情
-@router.get("/{category_id}", response_model=CategoryPublic)
+@router.get("/{category_id}", response_model=Response[CategoryPublic])
 def read_category(
     session: SessionDep, current_user: CurrentUser, category_id: int
 ) -> Any:
@@ -58,11 +57,11 @@ def read_category(
     category = session.get(Category, category_id)
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
-    return category
+    return Response(data=category)
 
 
 # 创建分类
-@router.post("/", response_model=CategoryPublic)
+@router.post("/", response_model=Response[CategoryPublic])
 def create_category(
     session: SessionDep, current_user: CurrentUser, category_in: CategoryBase
 ) -> Any:
@@ -77,10 +76,10 @@ def create_category(
     session.commit()
     session.refresh(category)
 
-    return category
+    return Response(data=category)
 
 # 更新分类
-@router.put("/{category_id}", response_model=CategoryPublic)
+@router.put("/{category_id}", response_model=Response[CategoryPublic])
 def update_category(
     session: SessionDep, current_user: CurrentUser, category_id: int, category_in: CategoryBase
 ) -> Any:
@@ -97,7 +96,7 @@ def update_category(
     session.commit()
     session.refresh(category)
 
-    return category
+    return Response(data=category)
 
 # 删除分类
 @router.delete("/{category_id}", response_model=Response)
@@ -116,5 +115,5 @@ def delete_category(
     session.delete(category)
     session.commit()
 
-    return {"message": "Category deleted successfully"}
+    return Response(data={"message": "Category deleted successfully"})
 

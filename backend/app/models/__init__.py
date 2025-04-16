@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:37:45
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-16 17:44:33
+LastEditTime: 2025-04-16 17:53:20
 FilePath: /fastapi-server/backend/app/models/__init__.py
 Description: 数据库模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -27,7 +27,7 @@ from .user import (
     UserCreate,
     UserPublic,
     UserRegister,
-    UserList,
+    UsersPublic,
     UserUpdate,
     UserUpdateMe,
     UpdatePassword,
@@ -70,7 +70,7 @@ __all__ = [
     "UserCreate",
     "UserPublic",
     "UserRegister",
-    "UserList",
+    "UsersPublic",
     "UserUpdate",
     "UserUpdateMe",
     "UpdatePassword",
