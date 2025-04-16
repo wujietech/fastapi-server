@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:53:17
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 18:05:53
+LastEditTime: 2025-04-16 15:50:56
 FilePath: /fastapi-server/backend/app/models/workflow_log.py
 Description: 工作流日志模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -42,5 +42,5 @@ class WorkflowLogPublic(WorkflowLogBase):
 
 
 class WorkflowLogsPublic(SQLModel):
-    logs: List[WorkflowLogPublic] # 工作流日志列表
-    total: int # 工作流日志总数
+    data: List[WorkflowLogPublic] # 工作流日志列表
+    count: int # 工作流日志总数

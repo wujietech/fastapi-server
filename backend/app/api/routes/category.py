@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 17:37:48
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 19:11:26
+LastEditTime: 2025-04-16 15:46:52
 FilePath: /fastapi-server/backend/app/api/routes/category.py
 Description: 分类接口
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -16,7 +16,7 @@ from sqlmodel import func, select
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Category, CategoryBase, CategoryPublic, CategoriesPublic, Message
 
-router = APIRouter(prefix="/categories", tags=["category"])
+router = APIRouter(prefix="/categories", tags=["categories"])
 
 # 获取分类列表
 @router.get("/", response_model=CategoriesPublic)

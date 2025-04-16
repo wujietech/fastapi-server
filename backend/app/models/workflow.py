@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:48:23
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 18:05:14
+LastEditTime: 2025-04-16 15:49:41
 FilePath: /fastapi-server/backend/app/models/workflow.py
 Description: 工作流模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -46,5 +46,5 @@ class WorkflowPublic(WorkflowBase):
 
 
 class WorkflowsPublic(SQLModel):
-    workflows: List[WorkflowPublic] # 工作流列表
-    total: int # 工作流总数
+    data: List[WorkflowPublic] # 工作流列表
+    count: int # 工作流总数
