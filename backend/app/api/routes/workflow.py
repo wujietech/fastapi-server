@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 17:37:48
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-16 16:33:37
+LastEditTime: 2025-04-16 17:36:50
 FilePath: /fastapi-server/backend/app/api/routes/workflow.py
 Description: 工作流接口
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -14,13 +14,15 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Workflow, WorkflowBase, WorkflowPublic, WorkflowsPublic, WorkflowDetail, Message
+from app.models import Workflow, WorkflowBase, WorkflowPublic
 from app.models.enums import PageSize
+from app.models.base import Response, Message
+from app.models.workflow import WorkflowDetail, WorkflowList
 
 router = APIRouter(prefix="/workflows", tags=["workflows"])
 
 # 获取工作流列表
-@router.get("/", response_model=WorkflowsPublic)
+@router.get("/", response_model=Response[WorkflowList])
 def read_workflows(
     session: SessionDep,
     # current_user: CurrentUser, # 暂时放开权限
@@ -45,7 +47,7 @@ def read_workflows(
         count_statement = count_statement.where(Workflow.category_id == cid)
     
     # 获取总数
-    count = session.exec(count_statement).one()
+    total = session.exec(count_statement).one()
     
     # 添加分页
     offset = (pageNumber - 1) * pageSize
@@ -54,10 +56,13 @@ def read_workflows(
     # 执行查询
     workflows = session.exec(statement).all()
 
-    return WorkflowsPublic(data=workflows, count=count)
+    return Response(data=WorkflowList(
+        items=workflows,
+        total=total
+    ))
 
 # 获取工作流详情
-@router.get("/{workflow_id}", response_model=WorkflowDetail)
+@router.get("/{workflow_id}", response_model=Response[WorkflowDetail])
 def read_workflow(
     # session: SessionDep, current_user: CurrentUser, workflow_id: int
     session: SessionDep, workflow_id: int
@@ -72,10 +77,17 @@ def read_workflow(
     workflow = session.get(Workflow, workflow_id)
     if not workflow:
         raise HTTPException(status_code=404, detail="Workflow not found")
-    return workflow
+    
+    # 转换为 WorkflowDetail 格式
+    workflow_detail = WorkflowDetail(
+        name=workflow.name,
+        description=workflow.description,
+        workflow=workflow.workflow  # 工作流内容，使用 workflow 字段
+    )
+    return Response(data=workflow_detail)
 
 # 创建工作流
-@router.post("/", response_model=WorkflowPublic)
+@router.post("/", response_model=Response[WorkflowPublic])
 def create_workflow(
     session: SessionDep, current_user: CurrentUser, workflow_in: WorkflowBase
 ) -> Any:
@@ -90,10 +102,10 @@ def create_workflow(
     session.commit()
     session.refresh(workflow)
 
-    return workflow
+    return Response(data=workflow)
 
 # 更新工作流
-@router.put("/{workflow_id}", response_model=WorkflowPublic)
+@router.put("/{workflow_id}", response_model=Response[WorkflowPublic])
 def update_workflow(
     session: SessionDep, current_user: CurrentUser, workflow_id: int, workflow_in: WorkflowBase
 ) -> Any:
@@ -115,10 +127,10 @@ def update_workflow(
     session.commit()
     session.refresh(workflow)
 
-    return workflow
+    return Response(data=workflow)
 
 # 删除工作流
-@router.delete("/{workflow_id}", response_model=Message)
+@router.delete("/{workflow_id}", response_model=Response[Message])
 def delete_workflow(
     session: SessionDep, current_user: CurrentUser, workflow_id: int
 ) -> Any:
@@ -134,4 +146,4 @@ def delete_workflow(
     session.delete(workflow)
     session.commit()
 
-    return {"message": "Workflow deleted successfully"}
+    return Response(data=Message(message="Workflow deleted successfully"))

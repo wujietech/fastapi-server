@@ -1,8 +1,8 @@
 '''
 Author: 李明(liming@inmyshow.com)
-Date: 2025-04-15 16:53:00
+Date: 2025-04-15 16:48:23
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 18:07:52
+LastEditTime: 2025-04-16 17:35:38
 FilePath: /fastapi-server/backend/app/models/category.py
 Description: 分类模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -33,6 +33,6 @@ class CategoryPublic(CategoryBase):
     updated_at: datetime # 更新时间
 
 
-class CategoriesPublic(SQLModel):
-    data: List[CategoryPublic] # 分类列表
-    count: int # 分类总数
+class CategoryList(SQLModel):
+    items: List[CategoryPublic] # 分类列表
+    total: int # 分类总数

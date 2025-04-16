@@ -10,16 +10,23 @@ Copyright (c) 2025 by 五街科技, All Rights Reserved.
 import sentry_sdk
 from fastapi import FastAPI, Request, status
 from fastapi.routing import APIRoute
-from fastapi.exceptions import RequestValidationError
+from fastapi.exceptions import RequestValidationError, ResponseValidationError
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
 from app.core.config import settings
+from app.models.base import ErrorResponse
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    """
+    Generate a unique ID for the route based on its tag and name.
+    If no tag is provided, use 'default' as the tag.
+    """
+    tag = route.tags[0] if route.tags else "default"
+    return f"{tag}-{route.name}"
 
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
@@ -34,13 +41,32 @@ app = FastAPI(
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    details = []
+    for error in exc.errors():
+        details.append({
+            "loc": error["loc"],
+            "msg": error["msg"],
+            "type": error["type"]
+        })
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={
-            "code": status.HTTP_422_UNPROCESSABLE_ENTITY,
-            "message": "请求参数验证错误",
-            "data": str(exc.errors())
-        }
+        content=jsonable_encoder(ErrorResponse(
+            code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            message="请求参数验证错误",
+            details=details
+        ))
+    )
+
+
+@app.exception_handler(ResponseValidationError)
+async def response_validation_handler(request: Request, exc: ResponseValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=jsonable_encoder(ErrorResponse(
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message="响应数据验证错误",
+            details=[{"msg": str(exc.errors())}]
+        ))
     )
 
 

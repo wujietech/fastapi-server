@@ -1,10 +1,10 @@
 '''
 Author: 李明(liming@inmyshow.com)
-Date: 2025-04-15 17:37:48
+Date: 2025-04-15 16:48:23
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-16 15:46:52
+LastEditTime: 2025-04-16 17:20:21
 FilePath: /fastapi-server/backend/app/api/routes/category.py
-Description: 分类接口
+Description: 分类路由
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
 '''
 import uuid
@@ -14,12 +14,14 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Category, CategoryBase, CategoryPublic, CategoriesPublic, Message
+from app.models import Category, CategoryBase, CategoryPublic
+from app.models.base import Response
+from app.models.category import CategoryList
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 
 # 获取分类列表
-@router.get("/", response_model=CategoriesPublic)
+@router.get("/", response_model=CategoryList)
 def read_categories(
     session: SessionDep, 
     current_user: CurrentUser, 
@@ -40,7 +42,7 @@ def read_categories(
     else:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
-    return CategoriesPublic(data=categories, count=count)
+    return CategoryList(data=categories, count=count)
 
 # 获取分类详情
 @router.get("/{category_id}", response_model=CategoryPublic)
@@ -98,7 +100,7 @@ def update_category(
     return category
 
 # 删除分类
-@router.delete("/{category_id}", response_model=Message)
+@router.delete("/{category_id}", response_model=Response)
 def delete_category(
     session: SessionDep, current_user: CurrentUser, category_id: int
 ) -> Any:

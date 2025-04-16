@@ -1,5 +1,14 @@
+'''
+Author: 李明(liming@inmyshow.com)
+Date: 2025-04-15 16:48:23
+LastEditors: 李明(liming@inmyshow.com)
+LastEditTime: 2025-04-16 17:35:16
+FilePath: /fastapi-server/backend/app/models/item.py
+Description: 项目模型
+Copyright (c) 2025 by 五街科技, All Rights Reserved. 
+'''
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 
 if TYPE_CHECKING:
@@ -37,6 +46,6 @@ class ItemPublic(ItemBase):
     owner_id: uuid.UUID
 
 
-class ItemsPublic(SQLModel):
-    data: list[ItemPublic]
-    count: int 
+class ItemList(SQLModel):
+    items: List[ItemPublic] # 项目列表
+    total: int # 项目总数 

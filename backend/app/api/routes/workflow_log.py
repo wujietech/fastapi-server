@@ -14,12 +14,14 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import WorkflowLog, WorkflowLogBase, WorkflowLogPublic, WorkflowLogsPublic, Message
+from app.models import WorkflowLog, WorkflowLogBase, WorkflowLogPublic
+from app.models.base import Response, Message
+from app.models.workflow_log import WorkflowLogList
 
 router = APIRouter(prefix="/workflow-log", tags=["workflow-log"])
 
 # 获取工作流日志列表
-@router.get("/", response_model=WorkflowLogsPublic)
+@router.get("/", response_model=Response[WorkflowLogList])
 def read_workflow_logs(
     session: SessionDep, current_user: CurrentUser, pageNumber: int = 1, pageSize: int = 20
 ) -> Any:
@@ -28,17 +30,20 @@ def read_workflow_logs(
     """
     if current_user.is_superuser:
         count_statement = select(func.count()).select_from(WorkflowLog)
-        count = session.exec(count_statement).one()
+        total = session.exec(count_statement).one()
         offset = (pageNumber - 1) * pageSize
         statement = select(WorkflowLog).offset(offset).limit(pageSize)
         workflow_logs = session.exec(statement).all()
     else:
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
-    return WorkflowLogsPublic(data=workflow_logs, count=count)
+    return Response(data=WorkflowLogList(
+        items=workflow_logs,
+        total=total
+    ))
 
 # 获取工作流日志详情
-@router.get("/{workflow_log_id}", response_model=WorkflowLogPublic)
+@router.get("/{workflow_log_id}", response_model=Response[WorkflowLogPublic])
 def read_workflow_log(
     session: SessionDep, current_user: CurrentUser, workflow_log_id: int
 ) -> Any:
@@ -51,10 +56,10 @@ def read_workflow_log(
     workflow_log = session.get(WorkflowLog, workflow_log_id)
     if not workflow_log:
         raise HTTPException(status_code=404, detail="Workflow log not found")
-    return workflow_log
+    return Response(data=workflow_log)
 
 # 创建工作流日志
-@router.post("/", response_model=WorkflowLogPublic)
+@router.post("/", response_model=Response[WorkflowLogPublic])
 def create_workflow_log(
     session: SessionDep, current_user: CurrentUser, workflow_log_in: WorkflowLogBase
 ) -> Any:
@@ -69,10 +74,10 @@ def create_workflow_log(
     session.commit()
     session.refresh(workflow_log)
 
-    return workflow_log
+    return Response(data=workflow_log)
 
 # 更新工作流日志
-@router.put("/{workflow_log_id}", response_model=WorkflowLogPublic)
+@router.put("/{workflow_log_id}", response_model=Response[WorkflowLogPublic])
 def update_workflow_log(
     session: SessionDep, current_user: CurrentUser, workflow_log_id: int, workflow_log_in: WorkflowLogBase
 ) -> Any:
@@ -94,10 +99,10 @@ def update_workflow_log(
     session.commit()
     session.refresh(workflow_log)
 
-    return workflow_log
+    return Response(data=workflow_log)
 
 # 删除工作流日志
-@router.delete("/{workflow_log_id}", response_model=Message)
+@router.delete("/{workflow_log_id}", response_model=Response[Message])
 def delete_workflow_log(
     session: SessionDep, current_user: CurrentUser, workflow_log_id: int
 ) -> Any:
@@ -113,4 +118,4 @@ def delete_workflow_log(
     session.delete(workflow_log)
     session.commit()
 
-    return {"message": "Workflow log deleted successfully"}
+    return Response(data=Message(message="Workflow log deleted successfully"))
