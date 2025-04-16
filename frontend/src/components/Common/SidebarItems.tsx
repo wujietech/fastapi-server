@@ -1,16 +1,28 @@
+/*
+ * @Author: 李明(liming@inmyshow.com)
+ * @Date: 2025-04-15 16:22:13
+ * @LastEditors: 李明(liming@inmyshow.com)
+ * @LastEditTime: 2025-04-16 18:38:00
+ * @FilePath: /fastapi-server/frontend/src/components/Common/SidebarItems.tsx
+ * @Description: 
+ * 
+ * Copyright (c) 2025 by 五街科技, All Rights Reserved. 
+ */
 import { Box, Flex, Icon, Text } from "@chakra-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Link as RouterLink } from "@tanstack/react-router"
-import { FiBriefcase, FiHome, FiSettings, FiUsers } from "react-icons/fi"
+import { FiBriefcase, FiHome, FiSettings, FiUsers, FiBookmark, FiSend, FiLayers } from "react-icons/fi"
 import type { IconType } from "react-icons/lib"
 
 import type { UserPublic } from "@/client"
-
+// react-icons/fi
 const items = [
   { icon: FiHome, title: "Dashboard", path: "/" },
-  { icon: FiBriefcase, title: "Items", path: "/items" },
-  { icon: FiBriefcase, title: "Categories", path: "/categories" },
+  { icon: FiBookmark, title: "分类", path: "/categories" },
+  { icon: FiSend, title: "工作流", path: "/workflows" },
+  { icon: FiLayers, title: "工作流日志", path: "/workflows-logs" },
   { icon: FiSettings, title: "User Settings", path: "/settings" },
+  { icon: FiBriefcase, title: "Items", path: "/items" },
 ]
 
 interface SidebarItemsProps {

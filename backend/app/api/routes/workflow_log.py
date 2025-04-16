@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 17:37:48
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-15 18:07:32
+LastEditTime: 2025-04-16 18:43:52
 FilePath: /fastapi-server/backend/app/api/routes/workflow_log.py
 Description: 工作流日志接口
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -18,7 +18,7 @@ from app.models import WorkflowLog, WorkflowLogBase, WorkflowLogPublic
 from app.models.base import Response, Message
 from app.models.workflow_log import WorkflowLogList
 
-router = APIRouter(prefix="/workflow-log", tags=["workflow-log"])
+router = APIRouter(prefix="/workflow-logs", tags=["workflow-logs"])
 
 # 获取工作流日志列表
 @router.get("/", response_model=Response[WorkflowLogList])

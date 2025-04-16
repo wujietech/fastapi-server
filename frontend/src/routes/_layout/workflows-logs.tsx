@@ -12,7 +12,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { FiEdit, FiTrash2, FiSearch } from "react-icons/fi"
 import { z } from "zod"
 
-import { CategoryPublic, CategoryService } from "@/client"
+import { WorkflowLogPublic, WorkflowLogService } from "@/client"
 import PendingItems from "@/components/Pending/PendingItems"
 import {
   PaginationItems,
@@ -30,24 +30,24 @@ const PER_PAGE = 20
 function getItemsQueryOptions({ pageNumber }: { pageNumber: number }) {
   return {
     queryFn: () =>
-      CategoryService.readCategories({ pageNumber, pageSize: PER_PAGE }),
-    queryKey: ["categories", { pageNumber }],
+      WorkflowLogService.readWorkflowLogs({ pageNumber, pageSize: PER_PAGE }),
+    queryKey: ["workflows", { pageNumber }],
   }
 }
 
-export const Route = createFileRoute("/_layout/categories")({
+export const Route = createFileRoute("/_layout/workflows-logs")({
   component: Items,
   validateSearch: (search) => itemsSearchSchema.parse(search),
 })
 
-function CategoryActionsMenu({ category }: { category: CategoryPublic }) {
+function WorkflowActionsMenu({ log }: { log: WorkflowLogPublic }) {
   return (
     <Flex gap={2}>
       <Button
         leftIcon={<FiEdit />}
         variant="ghost"
         size="sm"
-        onClick={() => console.log('编辑', category.id)}
+        onClick={() => console.log('编辑', log.id)}
       >
         编辑
       </Button>
@@ -55,7 +55,7 @@ function CategoryActionsMenu({ category }: { category: CategoryPublic }) {
         leftIcon={<FiTrash2 />}
         variant="ghost"
         size="sm"
-        onClick={() => console.log('删除', category.id)}
+        onClick={() => console.log('删除', log.id)}
       >
         删除
       </Button>
@@ -77,14 +77,14 @@ function ItemsTable() {
       search: (prev: { [key: string]: string }) => ({ ...prev, page }),
     })
 
-  const categories = data?.data?.items ?? []
+  const workflows = data?.data?.items ?? []
   const total = data?.data?.total ?? 0
 
   if (isLoading) {
     return <PendingItems />
   }
 
-  if (categories.length === 0) {
+  if (workflows.length === 0) {
     return (
       <EmptyState.Root>
         <EmptyState.Content>
@@ -92,9 +92,9 @@ function ItemsTable() {
             <FiSearch />
           </EmptyState.Indicator>
           <VStack textAlign="center">
-            <EmptyState.Title>暂无分类数据</EmptyState.Title>
+            <EmptyState.Title>暂无工作流数据</EmptyState.Title>
             <EmptyState.Description>
-              添加一个新的分类开始使用
+              添加一个新的工作流开始使用
             </EmptyState.Description>
           </VStack>
         </EmptyState.Content>
@@ -114,23 +114,23 @@ function ItemsTable() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {categories.map((category: CategoryPublic) => (
-            <Table.Row key={category.id} opacity={isPlaceholderData ? 0.5 : 1}>
+          {workflows.map((workflow: WorkflowPublic) => (
+            <Table.Row key={workflow.id} opacity={isPlaceholderData ? 0.5 : 1}>
               <Table.Cell truncate maxW="sm">
-                {category.id}
+                {workflow.id}
               </Table.Cell>
               <Table.Cell truncate maxW="sm">
-                {category.name}
+                {workflow.name}
               </Table.Cell>
               <Table.Cell
-                color={!category.description ? "gray" : "inherit"}
+                color={!workflow.description ? "gray" : "inherit"}
                 truncate
                 maxW="30%"
               >
-                {category.description || "N/A"}
+                {workflow.description || "N/A"}
               </Table.Cell>
               <Table.Cell>
-                <CategoryActionsMenu category={category} />
+                {/* <CategoryActionsMenu category={category} /> */}
               </Table.Cell>
             </Table.Row>
           ))}
@@ -157,7 +157,7 @@ function Items() {
   return (
     <Container maxW="full">
       {/* <Heading size="lg" pt={12}>
-        分类
+        工作流日志
       </Heading> */}
       <ItemsTable />
     </Container>

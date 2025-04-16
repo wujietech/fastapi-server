@@ -46,6 +46,10 @@ import type {
   UtilsHealthCheckResponse,
   CategoryReadCategoriesData,
   CategoryReadCategoriesResponse,
+  WorkflowReadWorkflowsData,
+  WorkflowReadWorkflowsResponse,
+  WorkflowLogReadWorkflowLogsData,
+  WorkflowLogReadWorkflowLogsResponse,
 } from "./types.gen"
 
 export class ItemsService {
@@ -196,6 +200,63 @@ export class CategoryService {
   }
   
 }
+
+export class WorkflowService {
+  /**
+   * Read Workflows
+   * Retrieve workflows.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns WorkflowsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readWorkflows(
+    data: WorkflowReadWorkflowsData = {},
+  ): CancelablePromise<WorkflowReadWorkflowsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/workflows/",
+      query: {
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class WorkflowLogService {
+  /**
+   * Read Workflow Logs
+   * Retrieve workflow logs.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns WorkflowLogsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readWorkflowLogs(
+    data: WorkflowLogReadWorkflowLogsData = {},
+  ): CancelablePromise<WorkflowLogReadWorkflowLogsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/workflow-logs/",
+      query: {
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+
+
 
 export class LoginService {
   /**

@@ -148,8 +148,58 @@ export type CategoriesPublic = {
   total: number
 }
 
-export type CategoryReadCategoriesResponse = CategoriesPublic
+export type CategoryReadCategoriesResponse = {
+  code: number
+  message: string
+  data: CategoriesPublic
+}
 
+
+export type WorkflowReadWorkflowsData = {
+  cid?: number
+  pageNumber?: number
+  pageSize?: number
+}
+
+export type WorkflowPublic = {
+  id: string
+  name: string
+  description: string
+}
+
+export type WorkflowsPublic = {
+  items: Array<WorkflowPublic>
+  total: number
+}
+
+export type WorkflowReadWorkflowsResponse = {
+  code: number
+  message: string
+  data: WorkflowsPublic
+}
+
+export type WorkflowLogReadWorkflowLogsData = {
+  pageNumber?: number
+  pageSize?: number
+}
+
+export type WorkflowLogPublic = {
+  id: string
+  workflow_id: string
+  status: string
+  created_at: string
+}
+
+export type WorkflowLogsPublic = {
+  items: Array<WorkflowLogPublic>
+  total: number
+}
+
+export type WorkflowLogReadWorkflowLogsResponse = {
+  code: number
+  message: string
+  data: WorkflowLogsPublic
+}
 
 export type LoginLoginAccessTokenData = {
   formData: Body_login_login_access_token
