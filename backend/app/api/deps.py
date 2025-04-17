@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import Annotated
+from typing import Annotated, Optional
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
 from sqlmodel import Session
+from sqlalchemy import text
 
 from app.core import security
 from app.core.config import settings
@@ -18,8 +19,11 @@ reusable_oauth2 = OAuth2PasswordBearer(
 )
 
 
-def get_db() -> Generator[Session, None, None]:
+def get_db() -> Generator:
     with Session(engine) as session:
+        # 设置会话时区为 Asia/Shanghai
+        session.execute(text("SET TIME ZONE 'Asia/Shanghai';"))
+        session.commit()
         yield session
 
 
