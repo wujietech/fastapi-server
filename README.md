@@ -14,11 +14,11 @@
 docker compose watch
 ```
 
-* 前端页面：http://localhost:5173/
-* 后端接口：http://localhost:8000/
-* 接口文档：http://localhost:8000/docs
-* 管理后台：http://localhost:8080/
-* Traefik UI：http://localhost:8090/
+* 前端页面：http://localhost:5173/  可视化管理后台
+* 后端 API 接口：http://localhost:8000/ 
+* API 接口文档：http://localhost:8000/docs
+* PostgreSQL 管理后台：http://localhost:8080/ 不建议直接修改数据
+* Traefik UI：http://localhost:8090/ 服务监控后台
 
 ### 命令行启动
 
@@ -29,12 +29,19 @@ Docker Compose 启动的一整套服务，如果想让前端后端单独使用�
 # 停掉 docker compose 启动的前端
 docker compose stop frontend
 cd frontend
-npm run dev
+# 安装依赖
+pnpm i
+# 启动项目
+pnpm dev
 ```
 #### 后端本地开发
 ```
 # 停掉 docker compose 启动的后端
 docker compose stop backend
+# 创建虚拟环境
+uv venv --python 3.11
+# 激活虚拟环境
+source .venv/bin/activate
 cd backend
 fastapi dev app/main.py
 ```

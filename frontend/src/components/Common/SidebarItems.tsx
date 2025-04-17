@@ -2,7 +2,7 @@
  * @Author: 李明(liming@inmyshow.com)
  * @Date: 2025-04-15 16:22:13
  * @LastEditors: 李明(liming@inmyshow.com)
- * @LastEditTime: 2025-04-16 18:38:00
+ * @LastEditTime: 2025-04-16 18:47:05
  * @FilePath: /fastapi-server/frontend/src/components/Common/SidebarItems.tsx
  * @Description: 
  * 
@@ -15,7 +15,7 @@ import { FiBriefcase, FiHome, FiSettings, FiUsers, FiBookmark, FiSend, FiLayers 
 import type { IconType } from "react-icons/lib"
 
 import type { UserPublic } from "@/client"
-// react-icons/fi
+// react-icons/fi，图标地址：https://react-icons.github.io/react-icons/icons/fi/
 const items = [
   { icon: FiHome, title: "Dashboard", path: "/" },
   { icon: FiBookmark, title: "分类", path: "/categories" },
@@ -64,7 +64,7 @@ const SidebarItems = ({ onClose }: SidebarItemsProps) => {
   return (
     <>
       <Text fontSize="xs" px={4} py={2} fontWeight="bold">
-        Menu
+        菜单
       </Text>
       <Box>{listItems}</Box>
     </>

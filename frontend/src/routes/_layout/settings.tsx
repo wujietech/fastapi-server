@@ -30,9 +30,9 @@ function UserSettings() {
 
   return (
     <Container maxW="full">
-      <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
+      {/* <Heading size="lg" textAlign={{ base: "center", md: "left" }} py={12}>
         User Settings
-      </Heading>
+      </Heading> */}
 
       <Tabs.Root defaultValue="my-profile" variant="subtle">
         <Tabs.List>

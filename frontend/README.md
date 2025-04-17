@@ -1,5 +1,7 @@
 # FastAPI 项目 - 前端
 
+图标库：https://react-icons.github.io/react-icons/icons/fi/
+
 前端使用 [Vite](https://vitejs.dev/)、[React](https://reactjs.org/)、[TypeScript](https://www.typescriptlang.org/)、[TanStack Query](https://tanstack.com/query)、[TanStack Router](https://tanstack.com/router) 和 [Chakra UI](https://chakra-ui.com/) 构建。
 
 ## 前端开发

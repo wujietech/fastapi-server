@@ -134,9 +134,9 @@ function ItemsTable() {
 function Items() {
   return (
     <Container maxW="full">
-      <Heading size="lg" pt={12}>
+      {/* <Heading size="lg" pt={12}>
         Items Management
-      </Heading>
+      </Heading> */}
       <AddItem />
       <ItemsTable />
     </Container>

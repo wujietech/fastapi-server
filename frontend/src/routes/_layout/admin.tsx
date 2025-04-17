@@ -116,9 +116,9 @@ function UsersTable() {
 function Admin() {
   return (
     <Container maxW="full">
-      <Heading size="lg" pt={12}>
+      {/* <Heading size="lg" pt={12}>
         Users Management
-      </Heading>
+      </Heading> */}
 
       <AddUser />
       <UsersTable />
