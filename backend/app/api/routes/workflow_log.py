@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 17:37:48
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-17 17:12:56
+LastEditTime: 2025-04-17 17:36:58
 FilePath: /fastapi-server/backend/app/api/routes/workflow_log.py
 Description: 工作流日志接口
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -24,19 +24,21 @@ router = APIRouter(prefix="/workflow-logs", tags=["workflow-logs"])
 # 获取工作流日志列表
 @router.get("/", response_model=Response[WorkflowLogList])
 def read_workflow_logs(
-    session: SessionDep, current_user: CurrentUser, pageNumber: int = 1, pageSize: int = 20
+    session: SessionDep,
+    # current_user: CurrentUser, # 暂时关闭权限验证
+    pageNumber: int = 1, pageSize: int = 20
 ) -> Any:
     """
     Retrieve workflow logs.
     """
-    if current_user.is_superuser:
-        count_statement = select(func.count()).select_from(WorkflowLog)
-        total = session.exec(count_statement).one()
-        offset = (pageNumber - 1) * pageSize
-        statement = select(WorkflowLog).offset(offset).limit(pageSize)
-        workflow_logs = session.exec(statement).all()
-    else:
-        raise HTTPException(status_code=403, detail="Not enough permissions")
+    # if not current_user.is_superuser:
+    #     raise HTTPException(status_code=403, detail="Not enough permissions")
+    
+    count_statement = select(func.count()).select_from(WorkflowLog)
+    total = session.exec(count_statement).one()
+    offset = (pageNumber - 1) * pageSize
+    statement = select(WorkflowLog).offset(offset).limit(pageSize)
+    workflow_logs = session.exec(statement).all()
 
     return Response(data=WorkflowLogList(
         items=workflow_logs,
@@ -46,13 +48,15 @@ def read_workflow_logs(
 # 获取工作流日志详情
 @router.get("/{workflow_log_id}", response_model=Response[WorkflowLogPublic])
 def read_workflow_log(
-    session: SessionDep, current_user: CurrentUser, workflow_log_id: int
+    session: SessionDep,
+    # current_user: CurrentUser,
+    workflow_log_id: int
 ) -> Any:
     """
     Retrieve a workflow log.
     """
-    if not current_user.is_superuser:
-        raise HTTPException(status_code=403, detail="Not enough permissions")
+    # if not current_user.is_superuser:
+    #     raise HTTPException(status_code=403, detail="Not enough permissions")
 
     workflow_log = session.get(WorkflowLog, workflow_log_id)
     if not workflow_log:

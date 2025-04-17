@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:48:23
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-17 17:11:39
+LastEditTime: 2025-04-17 17:47:38
 FilePath: /fastapi-server/backend/app/models/workflow.py
 Description: 工作流模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from app.models.time import get_beijing_time
+from pydantic import ConfigDict
 
 if TYPE_CHECKING:
     from .category import Category
@@ -36,6 +37,11 @@ class Workflow(WorkflowBase, table=True):
     updated_at: datetime = Field(default_factory=get_beijing_time) # 更新时间
     category: Optional["Category"] = Relationship(back_populates="workflows") # 工作流分类
     logs: List["WorkflowLog"] = Relationship(back_populates="workflow") # 工作流日志
+    model_config = ConfigDict(
+        json_encoders={
+            datetime: lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
 
 class WorkflowPublic(SQLModel):
     id: int # 工作流ID
@@ -51,10 +57,21 @@ class WorkflowPublic(SQLModel):
     created_at: datetime # 创建时间
     updated_at: datetime # 更新时间
 
+    model_config = ConfigDict(
+        json_encoders={
+            datetime: lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
+
 class WorkflowDetail(SQLModel):
     name: str # 工作流名称
     description: str # 工作流描述
     workflow: dict = Field(default={}, sa_type=JSONB) # 工作流内容
+    model_config = ConfigDict(
+        json_encoders={
+            datetime: lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
 
 class WorkflowList(SQLModel):
     items: List[WorkflowPublic] # 工作流列表

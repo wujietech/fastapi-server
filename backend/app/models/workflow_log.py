@@ -2,7 +2,7 @@
 Author: 李明(liming@inmyshow.com)
 Date: 2025-04-15 16:53:17
 LastEditors: 李明(liming@inmyshow.com)
-LastEditTime: 2025-04-17 17:11:34
+LastEditTime: 2025-04-17 17:46:50
 FilePath: /fastapi-server/backend/app/models/workflow_log.py
 Description: 工作流日志模型
 Copyright (c) 2025 by 五街科技, All Rights Reserved. 
@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 from app.models.time import get_beijing_time, BEIJING_TIMEZONE
+from pydantic import ConfigDict
 
 if TYPE_CHECKING:
     from .workflow import Workflow
@@ -34,12 +35,24 @@ class WorkflowLog(WorkflowLogBase, table=True):
     updated_at: datetime = Field(default_factory=get_beijing_time) # 更新时间
     workflow: Optional["Workflow"] = Relationship(back_populates="logs") # 工作流
 
+    model_config = ConfigDict(
+        json_encoders={
+            datetime: lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
+
 
 class WorkflowLogPublic(WorkflowLogBase):
     id: int # 工作流日志ID
     workflow_id: int # 工作流ID
     created_at: datetime # 创建时间
-    updated_at: datetime # 更新时间
+
+    model_config = ConfigDict(
+        json_encoders={
+            datetime: lambda dt: dt.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
+
 
 class WorkflowLogList(SQLModel):
     items: List[WorkflowLogPublic] # 工作流日志列表
